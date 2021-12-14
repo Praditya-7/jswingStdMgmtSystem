@@ -8,6 +8,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -41,7 +42,8 @@ public HomePage(){
     frame=new JFrame("Home Page");
 
     title =new JLabel("Student Detail Form");
-    title.setBounds(80,20,120,30);
+    title.setFont(new Font("Comfortaa", Font.BOLD, 18));
+    title.setBounds(80,20,200,30);
     frame.add(title);
 
     exportButton=new JButton("Export to excel");
@@ -51,7 +53,8 @@ public HomePage(){
     exportButton.setActionCommand("export");
 
     title2=new JLabel("Student Details");
-    title2.setBounds(500,110,120,30);
+    title2.setFont(new Font("Comfortaa", Font.BOLD, 18));
+    title2.setBounds(500,110,150,30);
     frame.add(title2);
 
     //Table Definition
@@ -195,7 +198,6 @@ public HomePage(){
 
     getStudentList();
 }
-
     @Override
     public void actionPerformed(ActionEvent e) {
     //SAVE OR INSERT
@@ -246,7 +248,6 @@ public HomePage(){
         }
         else{
             studentIDField.setText(studentTable.getValueAt(studentTable.getSelectedRow(),0).toString());
-            saveButton.setText("update");
             firstNameField.setText((String) studentTable.getValueAt(studentTable.getSelectedRow(),1));
             lastNameField.setText((String) studentTable.getValueAt(studentTable.getSelectedRow(),2));
             addressField.setText((String) studentTable.getValueAt(studentTable.getSelectedRow(),3));
@@ -255,12 +256,13 @@ public HomePage(){
                 maleGenderButton.setSelected(true);
             }
             else {
-                femaleGenderButton.setSelected(false);
+                femaleGenderButton.setSelected(true);
             }
             emailField.setText((String) studentTable.getValueAt(studentTable.getSelectedRow(),5));
             courseBox.setSelectedItem((String) studentTable.getValueAt(studentTable.getSelectedRow(),6));
             phoneField.setText((String) studentTable.getValueAt(studentTable.getSelectedRow(),7));
             remarksField.setText((String) studentTable.getValueAt(studentTable.getSelectedRow(),8));
+            saveButton.setText("update");
         }
     }
     //DELETE STUDENT
@@ -348,7 +350,6 @@ public HomePage(){
     }
         return tmodel;
     }
-
     //REFRESH STUDENT LIST TABLE
     public  void refreshStudentList(){
         getStudentList();
@@ -364,7 +365,6 @@ public HomePage(){
         courseBox.setSelectedItem("Select Course");
         saveButton.setText("Save");
     }
-
     //Search Student List
     public void getSearchList(){
         studentTable.clearSelection();
@@ -392,7 +392,6 @@ public HomePage(){
             e.printStackTrace();
         }
     }
-
     //Export Function
     public void exportToExcel() throws IOException {
     XSSFWorkbook wb= new XSSFWorkbook();
