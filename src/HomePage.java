@@ -23,7 +23,7 @@ import java.util.TreeMap;
 
 public class HomePage implements ActionListener {
 JFrame frame;
-JLabel title,firstNameLabel,lastNameLabel,addressLabel,genderLabel,emailLabel,courseLabel,phoneLabel,remarksLabel,searchLabel;
+JLabel title,title2,firstNameLabel,lastNameLabel,addressLabel,genderLabel,emailLabel,courseLabel,phoneLabel,remarksLabel,searchLabel;
 JTextField firstNameField, lastNameField,addressField,emailField,phoneField,studentIDField,searchField;
 JTextArea remarksField;
 JButton saveButton,editButton,deleteButton,logoutButton,changePasswordButton ,searchButton,exportButton;
@@ -50,6 +50,10 @@ public HomePage(){
     exportButton.addActionListener(this);
     exportButton.setActionCommand("export");
 
+    title2=new JLabel("Student Details");
+    title2.setBounds(500,110,120,30);
+    frame.add(title2);
+
     //Table Definition
     tmodel = new DefaultTableModel();
     tmodel.setColumnIdentifiers(columns);
@@ -57,21 +61,10 @@ public HomePage(){
     studentTable.setAutoCreateRowSorter(true);//for Sorting the table
     studentTable.setModel(tmodel);
     scrollPane=new JScrollPane(studentTable);
-    scrollPane.setBounds(500,80,800,200);
+    scrollPane.setBounds(500,140,800,150);
     scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     frame.add(scrollPane);
-
-    //search table
-    searchmodel=new DefaultTableModel();
-    searchmodel.setColumnIdentifiers(columns);
-    studentTable2=new JTable();
-    studentTable2.setModel(searchmodel);
-    scrollPane2=new JScrollPane(studentTable2);
-    scrollPane2.setBounds(500,500,800,200);
-    scrollPane2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-    scrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-    frame.add(scrollPane2);
 
     //Form
     studentIDField=new JTextField();
@@ -81,7 +74,7 @@ public HomePage(){
     frame.add(firstNameLabel);
 
     firstNameField = new JTextField();
-    firstNameField.setBounds(180,60,120,30);
+    firstNameField.setBounds(180,60,150,30);
     frame.add(firstNameField);
 
     lastNameLabel=new JLabel("Last name");
@@ -89,7 +82,7 @@ public HomePage(){
     frame.add(lastNameLabel);
 
     lastNameField=new JTextField();
-    lastNameField.setBounds(180,100,120,30);
+    lastNameField.setBounds(180,100,150,30);
     frame.add(lastNameField);
 
     addressLabel=new JLabel("Address");
@@ -97,7 +90,7 @@ public HomePage(){
     frame.add(addressLabel);
 
     addressField= new JTextField();
-    addressField.setBounds(180,140,120,30);
+    addressField.setBounds(180,140,150,30);
     frame.add(addressField);
 
     genderLabel=new JLabel("Gender");
@@ -121,7 +114,7 @@ public HomePage(){
     frame.add(emailLabel);
 
     emailField =new JTextField();
-    emailField.setBounds(180,220,120,30);
+    emailField.setBounds(180,220,150,30);
     frame.add(emailField);
 
     courseLabel=new JLabel("Courses");
@@ -130,7 +123,7 @@ public HomePage(){
 
     courseBox =new JComboBox<>(courseList);
     courseBox.setSelectedItem("select the Course");
-    courseBox.setBounds(180,260,120,30);
+    courseBox.setBounds(180,260,150,30);
     frame.add(courseBox);
 
     phoneLabel=new JLabel("Phone No");
@@ -138,7 +131,7 @@ public HomePage(){
     frame.add(phoneLabel);
 
     phoneField=new JTextField();
-    phoneField.setBounds(180,300,120,30);
+    phoneField.setBounds(180,300,150,30);
     frame.add(phoneField);
 
     remarksLabel=new JLabel("Remarks");
@@ -146,7 +139,7 @@ public HomePage(){
     frame.add(remarksLabel);
 
     remarksField=new JTextArea();
-    remarksField.setBounds(180,340,120,30);
+    remarksField.setBounds(180,340,150,30);
     frame.add(remarksField);
 
     saveButton=new JButton("Save");
@@ -180,15 +173,15 @@ public HomePage(){
     changePasswordButton.setActionCommand("change");
 
     searchLabel=new JLabel("Search by Email or First Name :");
-    searchLabel.setBounds(500,400,180,30);
+    searchLabel.setBounds(500,40,180,30);
     frame.add(searchLabel);
 
     searchField=new JTextField();
-    searchField.setBounds(700,400,150,30);
+    searchField.setBounds(700,40,150,30);
     frame.add(searchField);
 
     searchButton=new JButton("Search");
-    searchButton.setBounds(900,400,100,30);
+    searchButton.setBounds(900,40,100,30);
     frame.add(searchButton);
     searchButton.addActionListener(this);
     searchButton.setActionCommand("search");
@@ -313,7 +306,7 @@ public HomePage(){
     //export to excel
     else if(e.getActionCommand().equals("export")){
         fileChooser=new JFileChooser();
-        fileChooser.showOpenDialog(this.frame);
+        fileChooser.showSaveDialog(this.frame);
         try{
             File f= fileChooser.getSelectedFile();
             path =f.getAbsolutePath();
@@ -325,7 +318,6 @@ public HomePage(){
         }
     }
     }
-
     //Get Student List VIEW
     public DefaultTableModel getStudentList(){
     if(tmodel.getRowCount()>0){
@@ -375,9 +367,7 @@ public HomePage(){
 
     //Search Student List
     public void getSearchList(){
-        if(searchmodel.getRowCount()>0){
-            searchmodel.setRowCount(0);
-        }
+        studentTable.clearSelection();
         try{
             Connection connection=new DbConnection().getDbConnection();
             PreparedStatement stmt = connection.prepareStatement("SELECT STUDENTID,FIRSTNAME,LASTNAME,ADDRESS,GENDER,EMAIL,COURSES,PHONE,REMARKS FROM STUDENTS WHERE FIRSTNAME=? OR EMAIL=?");
@@ -385,20 +375,15 @@ public HomePage(){
             stmt.setString(2,searchField.getText());
             ResultSet rs =stmt.executeQuery();
             if ((rs.next())){
-                searchmodel.addRow(new Object[]{
-                        rs.getString("STUDENTID"),
-                        rs.getString("FIRSTNAME"),
-                        rs.getString("LASTNAME"),
-                        rs.getString("ADDRESS"),
-                        rs.getString("GENDER"),
-                        rs.getString("EMAIL"),
-                        rs.getString("COURSES"),
-                        rs.getString("PHONE"),
-                        rs.getString("REMARKS"),
-                });
+                for(int i=0;i<studentTable.getRowCount();i++){
+                    if(rs.getString("EMAIL").equals(studentTable.getValueAt(i,5).toString())){
+                        studentTable.addRowSelectionInterval(i,i);
+                        JOptionPane.showMessageDialog(this.frame,"Data Available","Found",JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
             }
             else{
-                JOptionPane.showMessageDialog(this.frame,"No Data Available","Error",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this.frame,"No Data Available","Not Found",JOptionPane.ERROR_MESSAGE);
             }
             stmt.close();
             connection.close();
